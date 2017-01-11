@@ -62,7 +62,7 @@ fi
 # Install prezto
 if [[ ! -d "${ZDOTDIR:-$HOME}/.zprezto/" ]]; then
 	print -P '%B>>> Installing prezto%b'
-	git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+	git clone --recursive https://github.com/triyangle/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 fi
 
 #
@@ -75,7 +75,7 @@ if [[ -d modules/prompt/external/statusline ]]; then
 	print -P '%B>>> %F{1}Skipping statusline download%f%b'
 else
 	print -P '%B>>> Downloading statusline%b'
-	git submodule add https://github.com/el1t/statusline.git modules/prompt/external/statusline
+	git submodule add https://github.com/triyangle/statusline.git modules/prompt/external/statusline
 fi
 
 # Install patched font

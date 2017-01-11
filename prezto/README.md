@@ -3,7 +3,7 @@ Statusline for Prezto
 ## Installation
 ### Automatic
 ```zsh
-zsh -c "$(curl -fsSL https://raw.githubusercontent.com/el1t/statusline/master/prezto/install)"
+zsh -c "$(curl -fsSL https://raw.githubusercontent.com/triyangle/statusline/master/prezto/install)"
 ```
 [install](install) will install statusline, prezto, and other dependencies as needed.
 
@@ -16,7 +16,7 @@ zsh -c "$(curl -fsSL https://raw.githubusercontent.com/el1t/statusline/master/pr
 #### Theme files
 To move `prompt_statusline_setup` to your prezto installation folder, run
 ```zsh
-curl -o ~/.zprezto/modules/prompt/functions/prompt_statusline_setup https://raw.githubusercontent.com/el1t/statusline/master/prezto/prompt_statusline_setup
+curl -o ~/.zprezto/modules/prompt/functions/prompt_statusline_setup https://raw.githubusercontent.com/triyangle/statusline/master/prezto/prompt_statusline_setup
 ```
 In `zpreztorc`, ensure the following plugins are enabled:
 ```zsh
