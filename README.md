@@ -15,7 +15,7 @@ Wish your prompt displayed more information, but afraid of filling it with clutt
 ### Quick Install
 Got/want prezto? Statusline is one line away:
 ```zsh
-zsh -c "$(curl -fsSL https://raw.githubusercontent.com/el1t/statusline/master/prezto/install)"
+zsh -c "$(curl -fsSL https://raw.githubusercontent.com/triyangle/statusline/master/prezto/install)"
 ```
 For more information, read on!
 
@@ -50,7 +50,7 @@ When the length of the working directory exceeds that of the terminal, subdirect
 ### Installation
 For automatic installation, simply run this in your shell:
 ```zsh
-zsh -c "$(curl -fsSL https://raw.githubusercontent.com/el1t/statusline/master/prezto/install)"
+zsh -c "$(curl -fsSL https://raw.githubusercontent.com/triyangle/statusline/master/prezto/install)"
 ```
 [Manual installation](prezto/README.md)
 
