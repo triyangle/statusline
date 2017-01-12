@@ -142,7 +142,7 @@ prompt_statusline_draw() {
   if [[ -n $diamond ]]; then
     local padding_color=$4
     [[ -z $4 ]] && padding_color=$_prompt_statusline_bg[2]
-    echo -n "%F{$1}%K{$padding_color}$_prompt_statusline_symbols[1]%F{$2}%K{$1} $3 %F{$1}%K{$padding_color}$_prompt_statusline_symbols[4]%f%k%E"
+    echo -n "%F{$1}%K{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[1]%F{$2}%K{$1} $3 %F{$1}%K{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[4]%f%k%E"
 
   # Standalone
   elif [[ -n $standalone ]]; then
