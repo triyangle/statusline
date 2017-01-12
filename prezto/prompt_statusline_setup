@@ -131,7 +131,7 @@ prompt_statusline_draw() {
     local length=$(( (COLUMNS - $#3 - 4) / 2 ))
     [[ -n $4 ]] && echo -n "%K{$4}"
     # Pad spaces
-    echo -n "$K{$_prompt_statusline_bg[2]}${(l:$length:: :)}"
+    echo -n "%K{$_prompt_statusline_bg[2]}${(l:$length:: :)}"
 
   # Output a warning
   elif [[ -n $warning ]]; then
