@@ -29,9 +29,8 @@ typeset -i _prompt_statusline_length=0
 _prompt_statusline_git=''
 _prompt_statusline_bg=(7 15 7 '') # foreground, background, middle, current
 _prompt_statusline_symbols=(   )
-_prompt_statusline_left_segments=(status user git-branch directory)
-_prompt_statusline_right_segments=(git-status virtualenv clock history machine)
-_os=`uname`
+_prompt_statusline_left_segments=(status user directory git-branch git-status)
+_prompt_statusline_right_segments=(virtualenv history clock machine)
 
 #
 # Segment drawing utility
@@ -81,7 +80,8 @@ prompt_statusline_draw() {
       if [[ $1 != $_prompt_statusline_bg[4] ]]; then
         echo -n "%F{$_prompt_statusline_bg[4]}$bg%S$_prompt_statusline_symbols[1]%s$fg "
       else
-        echo -n "$bg%F{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[2]$fg "
+        echo -n "%K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%k%f$bg$fg "
+        #echo -n "$bg%F{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[2]$fg "
       fi
     else
       echo -n "%F{$1}$_prompt_statusline_symbols[1]$bg$fg "
@@ -327,7 +327,8 @@ prompt_statusline() {
     s=single -single=single
 
   if [[ -n "$left" ]]; then
-    [[ -z "$single" && -n "$TMUX" ]] && echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$COLUMNS:: :)}%}%k%{$(echotc LEFT $COLUMNS)%}"
+    _adjusted_columns=$(($COLUMNS - 1))
+    [[ -z "$single" && -n "$TMUX" ]] && echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
     prompt_statusline_segments -n $_prompt_statusline_right_segments
     _prompt_statusline_bg[4]=''
     prompt_statusline_segments -l $_prompt_statusline_left_segments
@@ -511,7 +512,9 @@ $(prompt_statusline -sl)'
     PROMPT="%{$(print $FX[none])%}"'
 $(prompt_statusline -l)
 $editor_info[keymap]'
-    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}"'$(prompt_statusline -r)'"%{$(echotc DO 1)%}"
+    RPROMPT='$(prompt_statusline -r)'
+#     RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
+#    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
   fi
   if [[ -n $font ]]; then
     case "$font[2]" in
@@ -547,17 +550,16 @@ $editor_info[keymap]'
   # Editor styling
   zstyle ':prezto:module:editor:info:completing' format '%B%F{1}...%f%b'
 # %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
-  if [[ "$_os" == "Linux" ]]; then
-    zstyle ':prezto:module:editor:info:keymap:primary' format \
-    "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
-    zstyle ':prezto:module:editor:info:keymap:alternate' format \
-    "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
-  else
-    zstyle ':prezto:module:editor:info:keymap:primary' format \
-    "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
-    zstyle ':prezto:module:editor:info:keymap:alternate' format \
-    "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
-  fi
+
+  zstyle ':prezto:module:editor:info:keymap:primary' format \
+  "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{2} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
+  zstyle ':prezto:module:editor:info:keymap:alternate' format \
+  "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{14} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
+
+#  zstyle ':prezto:module:editor:info:keymap:primary' format \
+#   "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
+#  zstyle ':prezto:module:editor:info:keymap:alternate' format \
+#   "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
 
   zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{1}♺%f'
 #  %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
