@@ -115,11 +115,7 @@ prompt_statusline_draw() {
     local bg
     [[ -n $_prompt_statusline_bg[3] ]] && bg="%K{$_prompt_statusline_bg[3]}" || bg='%k'
     if [[ -n $_prompt_statusline_bg[4] ]]; then
-      if [[ "$_prompt_statusline_bg[4]" == "$_prompt_statusline_bg[3]" ]]; then
-        echo -n " %F{$_prompt_statusline_bg[4]}%K{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[4]"
-      else
-        echo -n " %F{$_prompt_statusline_bg[4]}$bg$_prompt_statusline_symbols[4]"
-      fi
+      echo -n " %F{$_prompt_statusline_bg[4]}%K{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[4]"
       [[ -z $uncalculated ]] && (( _prompt_statusline_length += 2 ))
     else
       echo -n $_prompt_statusline_bg[3]
