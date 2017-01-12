@@ -596,8 +596,9 @@ $editor_info[keymap]'
     'bg' '$(old_coalesce "%u" "%m" "2")'
 
   # Secondary prompt, printed when the shell needs more information to complete a command
-  PS2="%F{6}%K{$_prompt_statusline_bg[1]}❯%k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f"
-  RPS2="%k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[1]%F{6}%K{$_prompt_statusline_bg[1]} %_%E"
+  PS2='${editor_info[keymap]}'
+  #PS2="%F{6}%K{$_prompt_statusline_bg[1]} ${editor_info[keymap]}❯ %k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f"
+  RPS2="%k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[1]%F{6}%K{$_prompt_statusline_bg[1]} %_ %E"
 
   # Selection prompt used within a select loop
   PS3="$(prompt_statusline_draw -a 7 13 'Select:')"
