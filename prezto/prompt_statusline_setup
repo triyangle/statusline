@@ -145,7 +145,7 @@ prompt_statusline_draw() {
     local bg fg
     [[ -n $1 ]] && bg="%K{$1}" || bg="%K{$_prompt_statusline_bg[1]}"
     [[ -n $2 ]] && fg="%F{$2}" || fg='%f'
-    echo -n "$fg$bg $3 %F{$_prompt_statusline_bg[2]}%S$_prompt_statusline_symbols[4]%s%f%k "
+    echo -n "$fg$bg $3 %F{$1}%k$_prompt_statusline_symbols[4]%f%k "
   fi
 }
 
