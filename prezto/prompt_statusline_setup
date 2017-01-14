@@ -1,3 +1,5 @@
+# TODO: Look at pure prompt setup and figure out how they do their magic for
+# multiline prompts
 #
 # A two-line, responsive theme styled after powerline.
 # Originally ported from agnoster, in oh-my-zsh (https://github.com/robbyrussell/oh-my-zsh)
@@ -400,9 +402,13 @@ prompt_statusline_precmd() {
   if $(git rev-parse --is-inside-work-tree 2> /dev/null); then
     _prompt_statusline_git=1
     # Compute slow commands in the background.
-    trap prompt_statusline_git_info WINCH
-    prompt_statusline_precmd_async &!
-    _prompt_statusline_precmd_async_pid=$!
+    #trap prompt_statusline_git_info WINCH
+    if (( $+functions[git-info] )); then
+      git-info
+      typeset -p git_info >! $_prompt_statusline_precmd_async_data
+    fi
+    #prompt_statusline_precmd_async &!
+    #_prompt_statusline_precmd_async_pid=$!
   else
     unset _prompt_statusline_git
   fi
@@ -410,6 +416,7 @@ prompt_statusline_precmd() {
   if (( $+functions[python-info] )); then
     python-info
   fi
+  print -P "\n$(prompt_statusline -l)"
 }
 
 prompt_statusline_preexec() {
@@ -519,9 +526,7 @@ $(prompt_statusline -sl)'
     if [[ -n $color ]]; then
       _prompt_statusline_bg[3]=$color[2]
     fi
-    PROMPT="%{$(print $FX[none])%}"'
-$(prompt_statusline -l)
-$editor_info[keymap]'
+    PROMPT="%{$(print $FX[none])%}"'$editor_info[keymap]'
     RPROMPT='$(prompt_statusline -r)'
 #     RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
 #    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
