@@ -33,8 +33,9 @@ typeset -i _prompt_statusline_length=0
 _prompt_statusline_git=''
 _prompt_statusline_bg=(7 15 7 '') # foreground, background, middle, current
 _prompt_statusline_symbols=(   )
-_prompt_statusline_left_segments=(status user directory git-branch git-status)
-_prompt_statusline_right_segments=(virtualenv history clock machine)
+_prompt_statusline_left_segments=(user directory git-branch git-status)
+_prompt_statusline_right_segments=(virtualenv status clock history machine)
+os=`uname`
 
 #
 # Segment drawing utility
@@ -178,9 +179,15 @@ prompt_statusline_segments() {
       # Status: root/error/background jobs
       (status)
         local symbols=''
-        [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡'
-        (( retval != 0 )) && symbols+='%F{1}✘'
-        [[ -n $(jobs -l) ]] && symbols+='%F{6}%j⚙'
+        if [[ "$os" == "Darwin" ]]; then
+          [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡ '
+          (( retval != 0 )) && symbols+='%F{1} ✘'
+          [[ -n $(jobs -l) ]] && symbols+='%F{6} %j⚙ '
+        else
+          [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡'
+          (( retval != 0 )) && symbols+='%F{1}✘'
+          [[ -n $(jobs -l) ]] && symbols+='%F{6}%j⚙'
+        fi
 
         if [[ -n $symbols ]]; then
           prompt_statusline_draw $draw_options 0 '' $symbols
