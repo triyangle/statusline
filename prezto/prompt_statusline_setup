@@ -1,6 +1,8 @@
-# TODO: Look at pure prompt setup and figure out how they do their magic for
-# multiline prompts
-#
+# TODO:
+# 1. Look at pure prompt setup and figure out how they do their magic for multiline prompts
+# 2. Clean up/refactor code, optimize
+# 3. Investigate centering of not found messages?
+
 # A two-line, responsive theme styled after powerline.
 # Originally ported from agnoster, in oh-my-zsh (https://github.com/robbyrussell/oh-my-zsh)
 # Async support from sorin's prompt in prezto
