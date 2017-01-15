@@ -572,7 +572,7 @@ $(prompt_statusline -sl)'
   zstyle ':completion:*' format "$(prompt_statusline_draw -a 3 7 '%d')"
 
   # Editor styling
-  zstyle ':prezto:module:editor:info:completing' format '%B%F{1}...%f%b'
+  zstyle ':prezto:module:editor:info:completing' format '%k%B%F{1}...%f%b'
 # %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 
   zstyle ':prezto:module:editor:info:keymap:primary' format \
