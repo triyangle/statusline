@@ -535,7 +535,7 @@ $(prompt_statusline -sl)'
     if [[ -n $color ]]; then
       _prompt_statusline_bg[3]=$color[2]
     fi
-    PROMPT="%{$(print $FX[none])%}"'$editor_info[keymap]'
+    PROMPT="%{$(print $FX[none])%}"'$editor_info[keymap]$editor_info[overwrite]'
     RPROMPT='$(prompt_statusline -r)'
 #     RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
 #    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
@@ -575,20 +575,23 @@ $(prompt_statusline -sl)'
   zstyle ':prezto:module:editor:info:completing' format '%k%B%F{1}...%f%b'
 # %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 
-  zstyle ':prezto:module:editor:info:keymap:primary' format \
-  "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{2} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
+  zstyle ':prezto:module:editor:info:keymap:primary:insert' format \
+    "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{2} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
   zstyle ':prezto:module:editor:info:keymap:alternate' format \
-  "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{14} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
+    "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{14} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
 
 #  zstyle ':prezto:module:editor:info:keymap:primary' format \
 #   "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
 #  zstyle ':prezto:module:editor:info:keymap:alternate' format \
 #   "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
 
-  zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{1}♺%f'
+  zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format \
+    "%F{7}%B%K{1} REPLACE %b%K{$_prompt_statusline_bg[2]}%F{1}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{1} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f"
+
 #  %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 #zstyle ':prezto:module:editor:info:keymap:alternate' format \
 #    "%F{9}%K{$_prompt_statusline_bg[1]}❯%K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
+
   # Git-info styling
   if [[ "$OS" == "Linux" ]]; then
     zstyle ':prezto:module:git:info' verbose 'yes'
@@ -631,7 +634,7 @@ $(prompt_statusline -sl)'
   fi
 
   # Secondary prompt, printed when the shell needs more information to complete a command
-  PS2='${editor_info[keymap]}'
+  PS2='$editor_info[keymap]$editor_info[overwrite]'
   #PS2="%F{6}%K{$_prompt_statusline_bg[1]} ${editor_info[keymap]}❯ %k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f"
   RPS2="%k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[1]%F{6}%K{$_prompt_statusline_bg[1]} %_ "
 
