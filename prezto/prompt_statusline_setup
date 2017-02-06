@@ -586,7 +586,7 @@ $(prompt_statusline -sl)'
 #   "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
 
   zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format \
-    "%F{7}%B%K{1} REPLACE %b%K{$_prompt_statusline_bg[2]}%F{1}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{1} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f"
+    "%F{7}%B%K{1} REPLACE %b%K{$_prompt_statusline_bg[2]}%F{1}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{1} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f"
 
 #  %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 #zstyle ':prezto:module:editor:info:keymap:alternate' format \
