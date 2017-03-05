@@ -482,14 +482,6 @@ prompt_statusline_preview() {
   fi
 }
 
-old_coalesce() {
-  for arg in $argv; do
-    print "$arg"
-    return 0
-  done
-  return 1
-}
-
 # %s = undo standout, %u = remove underline, %b = unbold, %f = default foreground, %k = default background
 # %S = standout, %U = underline, %B = bold, %F = fg (text) color, %K = bg color, %E = clear to end of line
 prompt_statusline_setup() {
@@ -609,9 +601,9 @@ $(prompt_statusline -sl)'
     zstyle ':prezto:module:git:info:unmerged' format '%F{3}₥%f'
     zstyle ':prezto:module:git:info:untracked' format '1'
     zstyle ':prezto:module:git:info:keys' format \
-      'prompt' '$(old_coalesce "%b" "%p" "%c")%s' \
+      'prompt' '$(coalesce "%b" "%p" "%c")%s' \
       'rprompt' '%A%B%S%a%d%r%U' \
-      'bg' '$(old_coalesce "%u" "%m" "2")'
+      'bg' '$(coalesce "%u" "%m" "2")'
   else
     zstyle ':prezto:module:git:info' verbose 'yes'
     zstyle ':prezto:module:git:info:action' format '%s'
@@ -628,9 +620,9 @@ $(prompt_statusline -sl)'
     zstyle ':prezto:module:git:info:unmerged' format '%F{3}₥ %f'
     zstyle ':prezto:module:git:info:untracked' format '1'
     zstyle ':prezto:module:git:info:keys' format \
-      'prompt' '$(old_coalesce "%b" "%p" "%c")%s' \
+      'prompt' '$(coalesce "%b" "%p" "%c")%s' \
       'rprompt' '%A%B%S%a%d%r%U' \
-      'bg' '$(old_coalesce "%u" "%m" "2")'
+      'bg' '$(coalesce "%u" "%m" "2")'
   fi
 
   # Secondary prompt, printed when the shell needs more information to complete a command
