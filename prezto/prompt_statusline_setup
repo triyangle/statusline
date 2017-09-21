@@ -85,6 +85,7 @@ prompt_statusline_draw() {
       if [[ $1 != $_prompt_statusline_bg[4] ]]; then
         echo -n "%F{$_prompt_statusline_bg[4]}$bg%S$_prompt_statusline_symbols[1]%s$fg "
       else
+        # right end transparency
         echo -n "%k%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%k%f$bg$fg "
         #echo -n "$bg%F{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[2]$fg "
       fi
@@ -118,9 +119,10 @@ prompt_statusline_draw() {
   # End the left prompt, closing any open segments
   elif [[ -n $end ]]; then
     local bg
-#    [[ -n $_prompt_statusline_bg[3] ]] && bg="%K{$_prompt_statusline_bg[3]}" || bg='%k'
+    [[ -n $_prompt_statusline_bg[3] ]] && bg="%K{$_prompt_statusline_bg[3]}" || bg='%k'
     if [[ -n $_prompt_statusline_bg[4] ]]; then
-      echo -n " %k%F{$_prompt_statusline_bg[4]}$_prompt_statusline_symbols[4]"
+      #echo -n " %k%F{$_prompt_statusline_bg[4]}$_prompt_statusline_symbols[4]"
+      echo -n " %F{$_prompt_statusline_bg[4]}$bg$_prompt_statusline_symbols[4]"
       [[ -z $uncalculated ]] && (( _prompt_statusline_length += 2 ))
     else
       echo -n $_prompt_statusline_bg[3]
@@ -133,6 +135,7 @@ prompt_statusline_draw() {
     [[ -n $4 ]] && echo -n "%K{$4}"
     # Pad spaces
     echo -n "%k${(l:$length:: :)}"
+    #echo -n "${(l:$length:: :)}"
 
   # Output a warning
   elif [[ -n $warning ]]; then
@@ -144,13 +147,15 @@ prompt_statusline_draw() {
     local padding_color=$4
     [[ -z $4 ]] && padding_color=$_prompt_statusline_bg[2]
     echo -n "%F{$1}%k$_prompt_statusline_symbols[1]%F{$2}%K{$1} $3 %F{$1}%k$_prompt_statusline_symbols[4]%f%k%E"
+    #echo -n "%F{$1}%K{$padding_color}$_prompt_statusline_symbols[1]%F{$2}%K{$1} $3 %F{$1}%K{$padding_color}$_prompt_statusline_symbols[4]%f%E%k"
 
   # Standalone
   elif [[ -n $standalone ]]; then
     local bg fg
     [[ -n $1 ]] && bg="%K{$1}" || bg="%K{$_prompt_statusline_bg[1]}"
     [[ -n $2 ]] && fg="%F{$2}" || fg='%f'
-    echo -n "$fg$bg $3 %F{$1}%k$_prompt_statusline_symbols[4]%f%k "
+    #echo -n "$fg$bg $3 %F{$1}%k$_prompt_statusline_symbols[4]%f%k "
+    echo -n "$fg$bg $3 %F{$_prompt_statusline_bg[2]}%S$_prompt_statusline_symbols[4]%s%f%k "
   fi
 }
 
@@ -178,138 +183,138 @@ prompt_statusline_segments() {
     case "$1" in
       # Status: root/error/background jobs
       (status)
-        local symbols=''
-        if [[ "$os" == "Darwin" ]]; then
-          [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡ '
-          (( retval != 0 )) && symbols+='%F{1} ✘'
-          [[ -n $(jobs -l) ]] && symbols+='%F{6} %j⚙ '
-        else
-          [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡'
-          (( retval != 0 )) && symbols+='%F{1}✘'
-          [[ -n $(jobs -l) ]] && symbols+='%F{6}%j⚙'
-        fi
+      local symbols=''
+      if [[ "$os" == "Darwin" ]]; then
+        [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡ '
+        (( retval != 0 )) && symbols+='%F{1} ✘'
+        [[ -n $(jobs -l) ]] && symbols+='%F{6} %j⚙ '
+      else
+        [[ $UID == 0 || $EUID == 0 ]] && symbols+='%F{3}⚡'
+        (( retval != 0 )) && symbols+='%F{1}✘'
+        [[ -n $(jobs -l) ]] && symbols+='%F{6}%j⚙'
+      fi
 
-        if [[ -n $symbols ]]; then
-          prompt_statusline_draw $draw_options 0 '' $symbols
-        fi
-        ;;
+      if [[ -n $symbols ]]; then
+        prompt_statusline_draw $draw_options 0 '' $symbols
+      fi
+      ;;
 
       # User: username
       (user)
-        if [[ -n "$SSH_CLIENT$SSH_TTY" ]]; then
-          prompt_statusline_draw $draw_options 0 3 $LOGNAME
-        fi
-        ;;
+      if [[ -n "$SSH_CLIENT$SSH_TTY" ]]; then
+        prompt_statusline_draw $draw_options 0 3 $LOGNAME
+      fi
+      ;;
 
       # Machine: machine name
       (machine)
-        if [[ -n "$SSH_CLIENT$SSH_TTY" ]]; then
-          prompt_statusline_draw $draw_options 3 0 '@%m'
-        fi
-        ;;
+      if [[ -n "$SSH_CLIENT$SSH_TTY" ]]; then
+        prompt_statusline_draw $draw_options 3 0 '@%m'
+      fi
+      ;;
 
       # Git: branch, dirty status, commits behind/ahead of remote
       (git-branch)
-        if [[ -n $_prompt_statusline_git ]]; then
-          # If async has finished
-          if (( _prompt_statusline_precmd_async_pid == 0 )); then
-            # Declaring this inside the if statement would not be local
-            local git_output="${(e)git_info[prompt]}"
-            if [[ -n $git_output ]]; then
-              prompt_statusline_draw $draw_options $git_info[bg] 7 $git_output
-            fi
-          else
-            # Display placeholder for async, gray color
-            prompt_statusline_draw $draw_options 14 0 ' ...   '
+      if [[ -n $_prompt_statusline_git ]]; then
+        # If async has finished
+        if (( _prompt_statusline_precmd_async_pid == 0 )); then
+          # Declaring this inside the if statement would not be local
+          local git_output="${(e)git_info[prompt]}"
+          if [[ -n $git_output ]]; then
+            prompt_statusline_draw $draw_options $git_info[bg] 7 $git_output
           fi
+        else
+          # Display placeholder for async, gray color
+          prompt_statusline_draw $draw_options 14 0 ' ...   '
         fi
-        ;;
+      fi
+      ;;
 
       # Git: format action, output other statuses defined in git_info[rprompt]
       (git-status)
-        # If async has finished
-        if [[ -n $_prompt_statusline_git && $_prompt_statusline_precmd_async_pid -eq 0 ]]; then
-          if [[ -n $git_info[rprompt] ]]; then
-            case $git_info[action] in
-              (apply)
-                prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<A<'
-                ;;
-              (bisect)
-                prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<B>'
-                ;;
-              (cherry-pick|cherry-pick-sequence)
-                prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<C<'
-                ;;
-              (merge)
-                prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '>M<'
-                ;;
-              (rebase|rebase-interactive|rebase-merge)
-                prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '>R>'
-                ;;
-            esac
-            prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' $git_info[rprompt]
-          fi
+      # If async has finished
+      if [[ -n $_prompt_statusline_git && $_prompt_statusline_precmd_async_pid -eq 0 ]]; then
+        if [[ -n $git_info[rprompt] ]]; then
+          case $git_info[action] in
+            (apply)
+              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<A<'
+              ;;
+            (bisect)
+              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<B>'
+              ;;
+            (cherry-pick|cherry-pick-sequence)
+              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<C<'
+              ;;
+            (merge)
+              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '>M<'
+              ;;
+            (rebase|rebase-interactive|rebase-merge)
+              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '>R>'
+              ;;
+          esac
+          prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' $git_info[rprompt]
         fi
-        ;;
+      fi
+      ;;
 
       # Dir: current working directory, shortens if longer than available space
       (directory)
-        local directory="${${(%):-%~}}"
-        local hashed_directory="${${directory[2,-1]%%/*}:-$directory[1]}"
-        prompt_statusline_draw $draw_options 4 7 $hashed_directory
-        # Replace directory with empty string if at base of hashed directory, else eliminate hashed portion
-        directory="${${directory:#^?*/*}:+${directory#?*/}}"
-        if [[ -n $directory ]]; then
-          # Count spaces available for printing the working directory
-          # Subtract the extra 3 chars used for the current segment and an extra space in case
-          local spacing=$(( COLUMNS - _prompt_statusline_length - 3 - 1 ))
-          local length="$#directory"
-          if (( length <= spacing )); then
-            prompt_statusline_draw $draw_options 4 7 $directory
-          else
-            # Shorten path as much as necessary
-            local dir_segment
-            prompt_statusline_draw $draw_options 4 7
-            for dir_segment in "${(@s:/:)directory:h}"; do
-              if (( length > spacing )); then
-                if [[ "$dir_segment[1]" == "." ]]; then
-                  echo -n "$dir_segment[1]$dir_segment[2]/"
-                  (( length -= $#dir_segment - 2 ))
-                else
-                  echo -n "$dir_segment[1]/"
-                  (( length -= $#dir_segment - 1 ))
-                fi
+      local directory="${${(%):-%~}}"
+      local hashed_directory="${${directory[2,-1]%%/*}:-$directory[1]}"
+      prompt_statusline_draw $draw_options 4 7 $hashed_directory
+      # Replace directory with empty string if at base of hashed directory, else eliminate hashed portion
+      directory="${${directory:#^?*/*}:+${directory#?*/}}"
+      if [[ -n $directory ]]; then
+        # Count spaces available for printing the working directory
+        # Subtract the extra 3 chars used for the current segment and an extra space in case
+        local spacing=$(( COLUMNS - _prompt_statusline_length - 3 - 1 ))
+        local length="$#directory"
+        if (( length <= spacing )); then
+          prompt_statusline_draw $draw_options 4 7 $directory
+        else
+          # Shorten path as much as necessary
+          local dir_segment
+          prompt_statusline_draw $draw_options 4 7
+          for dir_segment in "${(@s:/:)directory:h}"; do
+            if (( length > spacing )); then
+              if [[ "$dir_segment[1]" == "." ]]; then
+                echo -n "$dir_segment[1]$dir_segment[2]/"
+                (( length -= $#dir_segment - 2 ))
               else
-                echo -n "$dir_segment/"
+                echo -n "$dir_segment[1]/"
+                (( length -= $#dir_segment - 1 ))
               fi
-            done
-            echo -n "${directory:t}"
-          fi
+            else
+              echo -n "$dir_segment/"
+            fi
+          done
+          echo -n "${directory:t}"
         fi
-        ;;
+      fi
+      ;;
 
-      (virtualenv)
-        if [[ -n "$python_info[virtualenv]" ]]; then
-          if (( _prompt_statusline_precmd_async_pid == 0 )); then
-            prompt_statusline_draw $draw_options 6 7 "$python_info[virtualenv]"
-          fi
+    (virtualenv)
+      if [[ -n "$python_info[virtualenv]" ]]; then
+        if (( _prompt_statusline_precmd_async_pid == 0 )); then
+          prompt_statusline_draw $draw_options 6 7 "$python_info[virtualenv]"
         fi
-        ;;
+      fi
+      ;;
 
-      (clock)
-        prompt_statusline_draw $draw_options 5 7 "${${(%%):-%t}## }"
-        ;;
+    (clock)
+      prompt_statusline_draw $draw_options 5 7 "${${(%%):-%t}## }"
+      ;;
 
-      (history)
-        prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '!%F{4}%!'
-        ;;
+    (history)
+      prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '!%F{4}%!'
+      ;;
 
-      (*)
-        prompt_statusline_draw -w "$1 is not a valid segment!"
-        ;;
-    esac
-    shift
-  done
+    (*)
+      prompt_statusline_draw -w "$1 is not a valid segment!"
+      ;;
+  esac
+  shift
+done
 }
 
 # Output runtime of previous task
@@ -343,13 +348,13 @@ prompt_statusline() {
     s=single -single=single
 
   if [[ -n "$left" ]]; then
-#    _adjusted_columns=$(($COLUMNS - 1))
-#    if [[ -z "$single" ]]; then
-#      echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
-#    else
-#      echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_COLUMNSadjusted_columns)%}"
-#    fi
-#    [[ -z "$single" && -n "$TMUX" ]] && echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
+    #    _adjusted_columns=$(($COLUMNS - 1))
+    #    if [[ -z "$single" ]]; then
+    #      echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
+    #    else
+    #      echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_COLUMNSadjusted_columns)%}"
+    #    fi
+    #    [[ -z "$single" && -n "$TMUX" ]] && echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
     prompt_statusline_segments -n $_prompt_statusline_right_segments
     _prompt_statusline_bg[4]=''
     prompt_statusline_segments -l $_prompt_statusline_left_segments
@@ -357,7 +362,7 @@ prompt_statusline() {
     if [[ -n "$single" ]]; then
       echo -n '%k'
     elif [[ -z "$TMUX" ]]; then
-#      echo -n '%E'
+      #      echo -n '%E'
     fi
 
   elif [[ -n $right ]]; then
@@ -434,27 +439,27 @@ prompt_statusline_preexec() {
 
 prompt_statusline_help() {
   print -P \
-"This prompt supports solarized light and dark. Solarized light with a white statusbar on two lines is the default style.
-You can invoke it thus:
+    "This prompt supports solarized light and dark. Solarized light with a white statusbar on two lines is the default style.
+  You can invoke it thus:
 
-  prompt statusline [--color <color>] [--dark] [--single]
+  prompt statusline [--color <color>] [--dark] [--font <font>] [--single]
 
-Set this theme with the following in your rc file:
+  Set this theme with the following in your rc file:
 
-  zstyle ':prezto:module:prompt' theme 'statusline' [-c|--color <color>] [-d|--dark] [-f|--font] [-s|--single]
+  zstyle ':prezto:module:prompt' theme 'statusline' [-c|--color <color>] [-d|--dark] [-f|--font <font>] [-s|--single]
 
-%BOPTIONS%b
+  %BOPTIONS%b
   -c, --color <color>
-    Set the statusbar background color. Does not work in single-line mode.
+  Set the statusbar background color. Does not work in single-line mode.
 
   -d, --dark
-    Apply the dark theme.
+  Apply the dark theme.
 
   -f, --font <font>
-    Customize the special characters used for dividers. <font> may be powerline, legacy, blocks, or none.
+  Customize the special characters used for dividers. <font> may be powerline, legacy, blocks, or none.
 
   -s, --single
-    Fit the prompt to one line."
+  Fit the prompt to one line."
 }
 
 prompt_statusline_preview() {
@@ -519,7 +524,7 @@ prompt_statusline_setup() {
     fi
     _prompt_statusline_bg[3]="$_prompt_statusline_bg[2]"
     PROMPT="%{$(print $FX[none])%}"'
-$(prompt_statusline -sl)'
+    $(prompt_statusline -sl)'
     RPROMPT="%{$terminfo[cuf1]%}"'$(prompt_statusline -sr)'
     [[ -n "$TMUX" ]] && RPROMPT+="%{$terminfo[cub1]%}" || RPROMPT+="%{$terminfo[cuf1]%}"
 
@@ -529,8 +534,8 @@ $(prompt_statusline -sl)'
     fi
     PROMPT="%{$(print $FX[none])%}"'$editor_info[keymap]$editor_info[overwrite]'
     RPROMPT='$(prompt_statusline -r)'
-#     RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
-#    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
+    #     RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
+    #    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
   fi
   if [[ -n $font ]]; then
     case "$font[2]" in
@@ -565,24 +570,24 @@ $(prompt_statusline -sl)'
 
   # Editor styling
   zstyle ':prezto:module:editor:info:completing' format '%k%B%F{1}...%f%b'
-# %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
+  # %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 
   zstyle ':prezto:module:editor:info:keymap:primary:insert' format \
     "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{2} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
   zstyle ':prezto:module:editor:info:keymap:alternate' format \
     "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{14} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
 
-#  zstyle ':prezto:module:editor:info:keymap:primary' format \
-#   "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
-#  zstyle ':prezto:module:editor:info:keymap:alternate' format \
-#   "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
+  #  zstyle ':prezto:module:editor:info:keymap:primary' format \
+    #   "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
+  #  zstyle ':prezto:module:editor:info:keymap:alternate' format \
+    #   "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%k$_prompt_statusline_symbols[4]%F{14} ❮ %f"
 
   zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format \
     "%F{7}%B%K{1} REPLACE %b%K{$_prompt_statusline_bg[2]}%F{1}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{1} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
 
-#  %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
-#zstyle ':prezto:module:editor:info:keymap:alternate' format \
-#    "%F{9}%K{$_prompt_statusline_bg[1]}❯%K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
+  #  %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
+  #zstyle ':prezto:module:editor:info:keymap:alternate' format \
+    #    "%F{9}%K{$_prompt_statusline_bg[1]}❯%K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 
   # Git-info styling
   if [[ "$OS" == "Linux" ]]; then
