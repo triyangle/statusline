@@ -34,7 +34,7 @@ _prompt_statusline_git=''
 _prompt_statusline_bg=(7 15 7 '') # foreground, background, middle, current
 _prompt_statusline_symbols=(   )
 _prompt_statusline_left_segments=(user directory git-branch git-status)
-_prompt_statusline_right_segments=(virtualenv history clock status machine)
+_prompt_statusline_right_segments=(condaenv virtualenv history clock status machine)
 os=`uname`
 
 #
@@ -301,6 +301,14 @@ prompt_statusline_segments() {
       if [[ -n "$python_info[virtualenv]" ]]; then
         if (( _prompt_statusline_precmd_async_pid == 0 )); then
           prompt_statusline_draw $draw_options 6 7 "$python_info[virtualenv]"
+        fi
+      fi
+      ;;
+
+    (condaenv)
+      if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+        if (( _prompt_statusline_precmd_async_pid == 0 )); then
+          prompt_statusline_draw $draw_options 6 7 "$CONDA_DEFAULT_ENV"
         fi
       fi
       ;;
