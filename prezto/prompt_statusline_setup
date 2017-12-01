@@ -33,8 +33,8 @@ typeset -i _prompt_statusline_length=0
 _prompt_statusline_git=''
 _prompt_statusline_bg=(7 15 7 '') # foreground, background, middle, current
 _prompt_statusline_symbols=(   )
-_prompt_statusline_left_segments=(user directory git-branch git-status)
-_prompt_statusline_right_segments=(condaenv virtualenv history clock status machine)
+_prompt_statusline_left_segments=(user machine directory git-branch git-status)
+_prompt_statusline_right_segments=(virtualenv history condaenv clock status)
 os=`uname`
 
 #
