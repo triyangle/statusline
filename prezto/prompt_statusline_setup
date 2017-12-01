@@ -34,7 +34,7 @@ _prompt_statusline_git=''
 _prompt_statusline_bg=(7 15 7 '') # foreground, background, middle, current
 _prompt_statusline_symbols=(   )
 _prompt_statusline_left_segments=(user directory git-branch git-status)
-_prompt_statusline_right_segments=(virtualenv history condaenv clock status)
+_prompt_statusline_right_segments=(virtualenv history clock condaenv status)
 os=`uname`
 
 #
