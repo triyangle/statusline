@@ -33,7 +33,7 @@ typeset -i _prompt_statusline_length=0
 _prompt_statusline_git=''
 _prompt_statusline_bg=(7 15 7 '') # foreground, background, middle, current
 _prompt_statusline_symbols=(   )
-_prompt_statusline_left_segments=(user machine directory git-branch git-status)
+_prompt_statusline_left_segments=(user directory git-branch git-status)
 _prompt_statusline_right_segments=(virtualenv history condaenv clock status)
 os=`uname`
 
@@ -206,7 +206,7 @@ prompt_statusline_segments() {
       # User: username
       (user)
       if [[ -n "$SSH_CLIENT$SSH_TTY" ]]; then
-        prompt_statusline_draw $draw_options 0 3 $LOGNAME
+        prompt_statusline_draw $draw_options 0 3 "$LOGNAME@%m"
       fi
       ;;
 
