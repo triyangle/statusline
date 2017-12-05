@@ -206,7 +206,7 @@ prompt_statusline_segments() {
       # User: username
       (user)
       if [[ -n "$SSH_CLIENT$SSH_TTY" ]]; then
-        prompt_statusline_draw $draw_options 0 3 "$LOGNAME@%m"
+        prompt_statusline_draw $draw_options 0 3 $LOGNAME
       fi
       ;;
 
