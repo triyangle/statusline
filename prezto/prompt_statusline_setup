@@ -62,7 +62,7 @@ prompt_statusline_draw() {
       if [[ $1 != $_prompt_statusline_bg[4] ]]; then
         echo -n " $bg%F{$_prompt_statusline_bg[4]}$_prompt_statusline_symbols[4] "
       else
-        echo -n " $bg%F{$_prompt_statusline_bg[2]}$_prompt_statusline_symbols[3] "
+        echo -n " $bg%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[3] "
       fi
       (( _prompt_statusline_length += 2 ))
     else
@@ -158,7 +158,7 @@ prompt_statusline_draw() {
     [[ -n $1 ]] && bg="%K{$1}" || bg="%K{$_prompt_statusline_bg[1]}"
     [[ -n $2 ]] && fg="%F{$2}" || fg='%f'
     #echo -n "$fg$bg $3 %F{$1}%k$_prompt_statusline_symbols[4]%f%k "
-    echo -n "$fg$bg $3 %F{$_prompt_statusline_bg[2]}%S$_prompt_statusline_symbols[4]%s%f%k "
+    echo -n "$fg$bg $3 %F{$_prompt_statusline_bg[2]}%S%F{235}$_prompt_statusline_symbols[4]%s%f%k "
   fi
 }
 
@@ -218,7 +218,7 @@ prompt_statusline_segments() {
           # Declaring this inside the if statement would not be local
           local git_output="${(e)git_info[prompt]}"
           if [[ -n $git_output ]]; then
-            prompt_statusline_draw $draw_options $git_info[bg] 7 $git_output
+            prompt_statusline_draw $draw_options $git_info[bg] 15 $git_output
           fi
         else
           # Display placeholder for async, gray color
@@ -234,22 +234,22 @@ prompt_statusline_segments() {
         if [[ -n $git_info[rprompt] ]]; then
           case $git_info[action] in
             (apply)
-              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<A<'
+              prompt_statusline_draw $draw_options 237 '' '<A<'
               ;;
             (bisect)
-              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<B>'
+              prompt_statusline_draw $draw_options 237 '' '<B>'
               ;;
             (cherry-pick|cherry-pick-sequence)
-              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '<C<'
+              prompt_statusline_draw $draw_options 237 '' '<C<'
               ;;
             (merge)
-              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '>M<'
+              prompt_statusline_draw $draw_options 237 '' '>M<'
               ;;
             (rebase|rebase-interactive|rebase-merge)
-              prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '>R>'
+              prompt_statusline_draw $draw_options 237 '' '>R>'
               ;;
           esac
-          prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' $git_info[rprompt]
+          prompt_statusline_draw $draw_options 237 '' $git_info[rprompt]
         fi
       fi
       ;;
@@ -258,7 +258,7 @@ prompt_statusline_segments() {
       (directory)
       local directory="${${(%):-%~}}"
       local hashed_directory="${${directory[2,-1]%%/*}:-$directory[1]}"
-      prompt_statusline_draw $draw_options 4 7 $hashed_directory
+      prompt_statusline_draw $draw_options 4 15 $hashed_directory
       # Replace directory with empty string if at base of hashed directory, else eliminate hashed portion
       directory="${${directory:#^?*/*}:+${directory#?*/}}"
       if [[ -n $directory ]]; then
@@ -267,7 +267,7 @@ prompt_statusline_segments() {
         local spacing=$(( COLUMNS - _prompt_statusline_length - 3 - 1 ))
         local length="$#directory"
         if (( length <= spacing )); then
-          prompt_statusline_draw $draw_options 4 7 $directory
+          prompt_statusline_draw $draw_options 4 15 $directory
         else
           # Shorten path as much as necessary
           local dir_segment
@@ -293,17 +293,17 @@ prompt_statusline_segments() {
     (virtualenv)
       if [[ -n "$python_info[virtualenv]" ]]; then
         if (( _prompt_statusline_precmd_async_pid == 0 )); then
-          prompt_statusline_draw $draw_options 6 7 "$python_info[virtualenv]"
+          prompt_statusline_draw $draw_options 6 15 "$python_info[virtualenv]"
         fi
       fi
       ;;
 
     (clock)
-      prompt_statusline_draw $draw_options 5 7 "${${(%%):-%t}## }"
+      prompt_statusline_draw $draw_options 5 15 "${${(%%):-%t}## }"
       ;;
 
     (history)
-      prompt_statusline_draw $draw_options $_prompt_statusline_bg[1] '' '!%F{4}%!'
+      prompt_statusline_draw $draw_options 237 '' '!%F{4}%!'
       ;;
 
     (*)
@@ -330,7 +330,7 @@ prompt_statusline_elapsed_time() {
       fi
       output+=("${end_time}s")
       echo
-      print -P '$(prompt_statusline_draw -cd 13 7 "$output" $_prompt_statusline_bg[1])'
+      print -P '$(prompt_statusline_draw -cd 13 15 "$output" $_prompt_statusline_bg[1])'
     fi
     unset _prompt_statusline_start_time
   fi
@@ -511,7 +511,7 @@ prompt_statusline_setup() {
   if [[ -n $dark ]]; then
     _prompt_statusline_bg=(0 8 0)
   else
-    _prompt_statusline_bg=(7 15 7)
+    _prompt_statusline_bg=(15 7 15)
   fi
 
   # Set single-line prompt
@@ -558,21 +558,21 @@ prompt_statusline_setup() {
   zstyle ':prezto:module:python:info:virtualenv' format '%v'
 
   # Completion styling
-  zstyle ':completion:*:corrections' format "$(prompt_statusline_draw -a 2 7 '%d (errors: %e)')"
-  zstyle ':completion:*:descriptions' format "$(prompt_statusline_draw -a 3 7 '%d')"
+  zstyle ':completion:*:corrections' format "$(prompt_statusline_draw -a 2 15 '%d (errors: %e)')"
+  zstyle ':completion:*:descriptions' format "$(prompt_statusline_draw -a 3 15 '%d')"
   zstyle ':completion:*:messages' format ' %F{13} -- %d --%f'
   zstyle ':completion:*:warnings' format "$(prompt_statusline_draw -cd 1 $_prompt_statusline_bg[1] 'No matches found')"
   zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-  zstyle ':completion:*' format "$(prompt_statusline_draw -a 3 7 '%d')"
+  zstyle ':completion:*' format "$(prompt_statusline_draw -a 3 15 '%d')"
 
   # Editor styling
   zstyle ':prezto:module:editor:info:completing' format '%k%B%F{1}...%f%b'
   # %K{$_prompt_statusline_bg[2]}%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[4]%f%k"
 
   zstyle ':prezto:module:editor:info:keymap:primary:insert' format \
-    "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{2} λ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
+    "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%K{237}$_prompt_statusline_symbols[4]%F{2} λ %F{237}%k$_prompt_statusline_symbols[4]%f "
   zstyle ':prezto:module:editor:info:keymap:alternate' format \
-    "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%K{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[4]%F{14} ʎ %F{$_prompt_statusline_bg[3]}%k$_prompt_statusline_symbols[4]%f "
+    "%F{7}%B%K{14} NORMAL %b%K{$_prompt_statusline_bg[2]}%F{14}%K{237}$_prompt_statusline_symbols[4]%F{14} ʎ %F{237}%k$_prompt_statusline_symbols[4]%f "
 
   #  zstyle ':prezto:module:editor:info:keymap:primary' format \
     #   "%F{7}%B%K{2} INSERT %b%K{$_prompt_statusline_bg[2]}%F{2}%k$_prompt_statusline_symbols[4]%F{2} ❯ %f"
