@@ -140,7 +140,7 @@ prompt_statusline_draw() {
 
   # Output a warning
   elif [[ -n $warning ]]; then
-    print -P "$(prompt_statusline_draw -a 4 7 Statusline)%F{1}%UWarning%u%f: $1" >&2
+    print -P "$(prompt_statusline_draw -a 4 15)%F{1}%UWarning%u%f: $1" >&2
   fi
 
   #  Sample output 
@@ -611,14 +611,14 @@ prompt_statusline_setup() {
   RPS2="%k%F{$_prompt_statusline_bg[1]}$_prompt_statusline_symbols[1]%F{6}%K{$_prompt_statusline_bg[1]} %_ "
 
   # Selection prompt used within a select loop
-  PS3="$(prompt_statusline_draw -a 7 13 'Select:')"
+  PS3="$(prompt_statusline_draw -a 15 13 'Select:')"
 
   # Execution trace prompt
   # setopt xtrace # disable with unsetopt xtrace
   PS4="$(prompt_statusline_draw -a '' 2 '%N%f:%F{4}%i')"
 
   # Spelling prompt used to correct spelling errors
-  SPROMPT="$(prompt_statusline_draw -a 9 7 'Correction:')change %B%F{1}%R%b%f to %B%F{2}%r%b%f [%Unyae%u]? "
+  SPROMPT="$(prompt_statusline_draw -a 9 15 'Correction:')change %B%F{1}%R%b%f to %B%F{2}%r%b%f [%Unyae%u]? "
 }
 
 prompt_statusline_setup "$@"
