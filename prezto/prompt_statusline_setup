@@ -109,10 +109,10 @@ prompt_statusline_draw() {
 
   # Start the right prompt, setting the current bg color
   elif [[ -n $start ]]; then
-    local bg
-    [[ -n $_prompt_statusline_bg[3] ]] && bg="%K{$_prompt_statusline_bg[3]}" || bg='%k'
+    # local bg
+    # [[ -n $_prompt_statusline_bg[3] ]] && bg="%K{$_prompt_statusline_bg[3]}" || bg='%k'
     echo -n "$bg"
-    _prompt_statusline_bg[4]=$_prompt_statusline_bg[3]
+    # _prompt_statusline_bg[4]=$_prompt_statusline_bg[3]
 
   # End the left prompt, closing any open segments
   elif [[ -n $end ]]; then
