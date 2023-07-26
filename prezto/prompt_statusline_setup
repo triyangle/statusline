@@ -344,13 +344,13 @@ prompt_statusline() {
     s=single -single=single
 
   if [[ -n "$left" ]]; then
-    #    _adjusted_columns=$(($COLUMNS - 1))
-    #    if [[ -z "$single" ]]; then
-    #      echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
-    #    else
-    #      echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_COLUMNSadjusted_columns)%}"
-    #    fi
-    #    [[ -z "$single" && -n "$TMUX" ]] && echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
+       # _adjusted_columns=$(($COLUMNS - 1))
+       # if [[ -z "$single" ]]; then
+         # echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
+       # else
+       # echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_COLUMNSadjusted_columns)%}"
+       # fi
+       # [[ -z "$single" && -n "$TMUX" ]] && echo -n "%K{$_prompt_statusline_bg[1]}%{${(l:$_adjusted_columns:: :)}%}%k%{$(echotc LEFT $_adjusted_columns)%}"
     prompt_statusline_segments -n $_prompt_statusline_right_segments
     _prompt_statusline_bg[4]=''
     prompt_statusline_segments -l $_prompt_statusline_left_segments
@@ -358,7 +358,7 @@ prompt_statusline() {
     if [[ -n "$single" ]]; then
       echo -n '%k'
     elif [[ -z "$TMUX" ]]; then
-      #      echo -n '%E'
+      echo -n '%E'
     fi
 
   elif [[ -n $right ]]; then
@@ -401,7 +401,7 @@ prompt_statusline_precmd() {
   unsetopt XTRACE KSH_ARRAYS
 
   # Check previous task runtime
-  prompt_statusline_elapsed_time
+  # prompt_statusline_elapsed_time
 
   # Kill the old process of slow commands if it is still running.
   if (( _prompt_statusline_precmd_async_pid > 0 )); then
@@ -531,9 +531,10 @@ prompt_statusline_setup() {
       _prompt_statusline_bg[3]=$color[2]
     fi
     PROMPT="%{$(print $FX[none])%}"'$editor_info[keymap]$editor_info[overwrite]'
-    RPROMPT='$(prompt_statusline -r)'
-    #     RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
-    #    RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
+    # RPROMPT='$(prompt_statusline -r)'
+    # RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}"'$(prompt_statusline -r)'"%{$(echotc DO 1)%}"
+    # RPROMPT='%F{$_prompt_statusline_bg[3]}$_prompt_statusline_symbols[1]%f$(prompt_statusline -r)'
+    # RPROMPT="%{$terminfo[cuu1]$terminfo[cuf1]%}""%{$(echotc DO 1)%}"'$(prompt_statusline -r)'
   fi
   if [[ -n $font ]]; then
     case "$font[2]" in
@@ -562,7 +563,7 @@ prompt_statusline_setup() {
   zstyle ':completion:*:corrections' format "$(prompt_statusline_draw -a 2 15 '%d (errors: %e)')"
   zstyle ':completion:*:descriptions' format "$(prompt_statusline_draw -a 3 15 '%d')"
   zstyle ':completion:*:messages' format ' %F{13} -- %d --%f'
-  zstyle ':completion:*:warnings' format "$(prompt_statusline_draw -cd 1 $_prompt_statusline_bg[1] 'No matches found')"
+  zstyle ':completion:*:warnings' format "$(prompt_statusline_draw -a 1 $_prompt_statusline_bg[1] 'No matches found')"
   zstyle ':completion:*:default' list-prompt '%S%M matches%s'
   zstyle ':completion:*' format "$(prompt_statusline_draw -a 3 15 '%d')"
 
