@@ -290,9 +290,9 @@ prompt_statusline_segments() {
       ;;
 
     (virtualenv)
-      if [[ -n "$python_info[virtualenv]" ]]; then
+      if [[ -n $VIRTUAL_ENV ]]; then
         if (( _prompt_statusline_precmd_async_pid == 0 )); then
-          prompt_statusline_draw $draw_options 6 15 "$python_info[virtualenv]"
+          prompt_statusline_draw $draw_options 6 15 $(basename $VIRTUAL_ENV)
         fi
       fi
       ;;
